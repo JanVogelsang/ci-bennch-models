@@ -351,6 +351,7 @@ def run_simulation():
 
     nest.ResetKernel()
     nest.set_verbosity(M_INFO)
+    nest.print_time = True
 
     base_memory = str(memory_thisjob())
 
