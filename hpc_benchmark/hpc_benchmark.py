@@ -96,8 +96,8 @@ params = {
     'presimtime': {model_time_presim}, # simulation time until reaching equilibrium
     'dt': 0.1,                         # simulation step
     'compressed_spikes': {compressed_spikes},  # whether to use spike compression
-    'record_spikes': {record_spikes},  # switch to record spikes of excitatory
-                                       # neurons to file
+    'sort_connections': {sort_connections},
+    'record_spikes': {record_spikes},  # switch to record spikes of excitatory neurons to file
     'rng_seed': {rng_seed},            # random number generator seed
     'path_name': '.',                  # path where all files will have to be written
     'log_file': 'logfile',             # naming scheme for the log files
@@ -208,7 +208,8 @@ def build_network():
                           'resolution': params['dt'],
                           'rng_seed': params['rng_seed'],
                           'overwrite_files': True,
-                          'use_compressed_spikes': params['compressed_spikes']})
+                          'use_compressed_spikes': params['compressed_spikes'],
+                          'sort_connections_by_source': params['sort_connections']})
 
     nest.message(M_INFO, 'build_network', 'Creating excitatory population.')
     E_neurons = nest.Create('iaf_psc_alpha', NE, params=model_params)
