@@ -207,7 +207,8 @@ def build_network():
     nest.SetKernelStatus({'total_num_virtual_procs': params['nvp'],
                           'resolution': params['dt'],
                           'rng_seed': params['rng_seed'],
-                          'overwrite_files': True})
+                          'overwrite_files': True,
+                          'use_compressed_spikes': params['compressed_spikes']})
 
     nest.message(M_INFO, 'build_network', 'Creating excitatory population.')
     E_neurons = nest.Create('iaf_psc_alpha_ax_delay', NE, params=model_params)
