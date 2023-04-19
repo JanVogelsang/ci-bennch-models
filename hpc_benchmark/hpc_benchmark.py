@@ -209,7 +209,8 @@ def build_network():
                           'rng_seed': params['rng_seed'],
                           'overwrite_files': True,
                           'use_compressed_spikes': params['compressed_spikes'],
-                          'sort_connections_by_source': params['sort_connections']})
+                          'sort_connections_by_source': params['sort_connections'],
+                          'keep_source_table': False})
 
     nest.message(M_INFO, 'build_network', 'Creating excitatory population.')
     E_neurons = nest.Create('iaf_psc_alpha', NE, params=model_params)
