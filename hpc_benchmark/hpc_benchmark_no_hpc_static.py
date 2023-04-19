@@ -166,7 +166,8 @@ brunel_params = {
     'mean_potential': 5.7,
     'sigma_potential': 7.2,
 
-    'delay': 1.5,  # synaptic delay, all connections(ms)
+    'delay': {dendritic_delay},  # synaptic dendritic delay, all connections(ms)
+    'axonal_delay': {axonal_delay},  # synaptic axonal delay, all connections(ms)
 
     # synaptic weight
     'JE': 0.14,  # peak of EPSP
