@@ -166,8 +166,7 @@ brunel_params = {
     'mean_potential': 5.7,
     'sigma_potential': 7.2,
 
-    'delay': {dendritic_delay},  # synaptic dendritic delay, all connections(ms)
-    'axonal_delay': {axonal_delay},  # synaptic axonal delay, all connections(ms)
+    'delay': {dendritic_delay} + {axonal_delay},  # synaptic delay, all connections(ms)
 
     # synaptic weight
     'JE': 0.14,  # peak of EPSP
@@ -257,7 +256,7 @@ def build_network():
 
     tic = time.time()
 
-    nest.SetDefaults('static_synapse_hpc', {'delay': brunel_params['delay'], 'axonal_delay': brunel_params['axonal_delay']})
+    nest.SetDefaults('static_synapse_hpc', {'delay': brunel_params['delay']})
     nest.CopyModel('static_synapse_hpc', 'syn_ex',
                    {'weight': JE_pA})
     nest.CopyModel('static_synapse_hpc', 'syn_in',
