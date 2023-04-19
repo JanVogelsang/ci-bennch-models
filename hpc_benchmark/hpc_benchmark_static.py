@@ -257,7 +257,7 @@ def build_network():
 
     tic = time.time()
 
-    nest.SetDefaults('static_synapse_hpc', {'delay': brunel_params['delay']})
+    nest.SetDefaults('static_synapse_hpc', {'delay': brunel_params['delay'], 'axonal_delay': brunel_params['axonal_delay']})
     nest.CopyModel('static_synapse_hpc', 'syn_ex',
                    {'weight': JE_pA})
     nest.CopyModel('static_synapse_hpc', 'syn_in',
