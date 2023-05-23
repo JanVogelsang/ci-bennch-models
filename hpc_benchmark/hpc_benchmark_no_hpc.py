@@ -363,10 +363,16 @@ def run_simulation():
 
     tic = time.time()
 
-    nest.Simulate(params['presimtime'])
+    nest.Simulate(params['dt'])
+
+    InitTime = time.time() - tic
+    init_memory = str(memory_thisjob())
+       
+    tic = time.time()
+
+    nest.Simulate(params['presimtime'] - params['dt'])
 
     PreparationTime = time.time() - tic
-    init_memory = str(memory_thisjob())
 
     tic = time.time()
 
@@ -379,7 +385,8 @@ def run_simulation():
     if params['record_spikes']:
         average_rate = compute_rate(sr)
 
-    d = {'py_time_presimulate': PreparationTime,
+    d = {'py_time_init': InitTime,
+         'py_time_presimulate': PreparationTime,
          'py_time_simulate': SimCPUTime,
          'base_memory': base_memory,
          'init_memory': init_memory,
