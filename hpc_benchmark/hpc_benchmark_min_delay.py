@@ -212,7 +212,8 @@ def build_network():
                           'use_compressed_spikes': params['compressed_spikes'],
                           'sort_connections_by_source': params['sort_connections'],
                           'keep_source_table': False,
-                          'min_delay': {min_delay}})
+                          'min_delay': {min_delay},
+                          'max_delay': {dendritic_delay} + {axonal_delay}})
 
     nest.message(M_INFO, 'build_network', 'Creating excitatory population.')
     E_neurons = nest.Create('iaf_psc_alpha_ax_delay', NE, params=model_params)
