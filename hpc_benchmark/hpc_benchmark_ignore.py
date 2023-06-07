@@ -141,20 +141,8 @@ brunel_params = {
 
     'Nrec': 1000,  # number of neurons to record spikes from
 
-    'model_params': {  # Set variables for iaf_psc_alpha
-        'E_L': 0.0,  # Resting membrane potential(mV)
-        'C_m': 250.0,  # Capacity of the membrane(pF)
-        'tau_m': 10.0,  # Membrane time constant(ms)
-        't_ref': 0.5,  # Duration of refractory period(ms)
-        'V_th': 20.0,  # Threshold(mV)
-        'V_reset': 0.0,  # Reset Potential(mV)
-        # time const. postsynaptic excitatory currents(ms)
-        'tau_syn_ex': tau_syn,
-        # time const. postsynaptic inhibitory currents(ms)
-        'tau_syn_in': tau_syn,
-        'tau_minus': 30.0,  # time constant for STDP(depression)
-        # V can be randomly initialized see below
-        'V_m': 5.7  # mean value of membrane potential
+    'model_params': {  # Set variables for ignore_and_fire
+        'rate': {rate}
     },
 
     ####################################################################
