@@ -150,7 +150,7 @@ brunel_params = {
     # in the paper were used for the benchmarks on K, the values given
     # here were used for the benchmark on JUQUEEN.
 
-    'randomize_Vm': True,
+    'randomize_Vm': False,
     'mean_potential': 5.7,
     'sigma_potential': 7.2,
 
