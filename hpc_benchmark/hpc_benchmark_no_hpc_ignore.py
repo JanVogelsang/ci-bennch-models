@@ -218,7 +218,7 @@ def build_network():
     nest.message(M_INFO, 'build_network', 'Creating inhibitory population.')
     I_neurons = nest.Create('ignore_and_fire', NI)
 
-    random_rate = nest.random.normal({rate}, {rate}/2)
+    random_rate = nest.math.redraw(nest.random.normal({rate}, {rate}/2), 0.00001, 1000)
     nest.GetLocalNodeCollection(E_neurons).rate = random_rate
     nest.GetLocalNodeCollection(I_neurons).rate = random_rate
     random_phase = nest.random.uniform(0, 1)
