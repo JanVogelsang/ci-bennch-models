@@ -214,19 +214,17 @@ def build_network():
                           'keep_source_table': False})
 
     nest.message(M_INFO, 'build_network', 'Creating excitatory population.')
-    E_neurons = nest.Create('ignore_and_fire', NE, params={'rate': {rate}})
+    E_neurons = nest.Create('ignore_and_fire', NE)
 
     nest.message(M_INFO, 'build_network', 'Creating inhibitory population.')
-    I_neurons = nest.Create('ignore_and_fire', NI, params={'rate': {rate}})
+    I_neurons = nest.Create('ignore_and_fire', NI)
 
-    if brunel_params['randomize_Vm']:
-        nest.message(M_INFO, 'build_network',
-                     'Randomzing membrane potentials.')
-
-        random_vm = nest.random.normal(brunel_params['mean_potential'],
-                                       brunel_params['sigma_potential'])
-        nest.GetLocalNodeCollection(E_neurons).V_m = random_vm
-        nest.GetLocalNodeCollection(I_neurons).V_m = random_vm
+    random_rate = nest.random.normal({rate}, {rate}/10)
+    nest.GetLocalNodeCollection(E_neurons).rate = random_rate
+    nest.GetLocalNodeCollection(I_neurons).rate = random_rate
+    random_phase = nest.random.uniform(0, 1)
+    nest.GetLocalNodeCollection(E_neurons).phase = random_phase
+    nest.GetLocalNodeCollection(I_neurons).phase = random_phase
 
     # number of incoming excitatory connections
     CE = int(1. * NE / params['scale'])
