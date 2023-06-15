@@ -264,6 +264,8 @@ def build_network():
 
     BuildNodeTime = time.time() - tic
     node_memory = str(get_vmsize())
+    node_memory_rss = str(get_rss())
+    node_memory_peak = str(get_vmpeak())
 
     tic = time.time()
 
@@ -342,11 +344,17 @@ def build_network():
     # read out time used for building
     BuildEdgeTime = time.time() - tic
     network_memory = str(get_vmsize())
+    network_memory_rss = str(get_rss())
+    network_memory_peak = str(get_vmpeak())
 
     d = {'py_time_create': BuildNodeTime,
          'py_time_connect': BuildEdgeTime,
          'node_memory': node_memory,
-         'network_memory': network_memory}
+         'node_memory_rss': node_memory_rss,
+         'node_memory_peak': node_memory_peak,
+         'network_memory': network_memory,
+         'network_memory_rss': network_memory_rss,
+         'network_memory_peak': network_memory_peak}
     recorders = E_recorder if params['record_spikes'] else None
 
     return d, recorders
@@ -360,6 +368,8 @@ def run_simulation():
     nest.print_time = True
 
     base_memory = str(get_vmsize())
+    base_memory_rss = str(get_rss())
+    base_memory_peak = str(get_vmpeak())
 
     build_dict, sr = build_network()
 
@@ -369,6 +379,8 @@ def run_simulation():
 
     InitTime = time.time() - tic
     init_memory = str(get_vmsize())
+    init_memory_rss = str(get_rss())
+    init_memory_peak = str(get_vmpeak())
        
     presim_steps = int(params['presimtime'] // nest.min_delay)
     presim_remaining_time = params['presimtime'] - (presim_steps * nest.min_delay)
@@ -417,6 +429,8 @@ def run_simulation():
 
     SimCPUTime = time.time() - tic
     total_memory = str(get_vmsize())
+    total_memory_rss = str(get_rss())
+    total_memory_peak = str(get_vmpeak())
 
     average_rate = 0.0
     if params['record_spikes']:
@@ -428,6 +442,12 @@ def run_simulation():
          'base_memory': base_memory,
          'init_memory': init_memory,
          'total_memory': total_memory,
+         'base_memory_rss': base_memory_rss,
+         'init_memory_rss': init_memory_rss,
+         'total_memory_rss': total_memory_rss,
+         'base_memory_peak': base_memory_peak,
+         'init_memory_peak': init_memory_peak,
+         'total_memory_peak': total_memory_peak,
          'average_rate': average_rate}
     d.update(build_dict)
     d.update(nest.kernel_status)
