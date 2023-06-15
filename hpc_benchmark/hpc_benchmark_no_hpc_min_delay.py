@@ -365,20 +365,55 @@ def run_simulation():
 
     tic = time.time()
 
-    nest.Simulate(params['dt'])
+    nest.Prepare()
 
     InitTime = time.time() - tic
     init_memory = str(get_vmsize())
        
-    tic = time.time()
+    presim_steps = int(params['presimtime'] // nest.min_delay)
+    presim_remaining_time = params['presimtime'] - (presim_steps * nest.min_delay)
+    sim_steps = int(params['simtime'] // nest.min_delay)
+    sim_remaining_time = params['simtime'] - (sim_steps * nest.min_delay)
+    
+    total_steps = presim_steps + sim_steps + (1 if presim_remaining_time > 0 else 0) + (1 if sim_remaining_time > 0 else 0)
+    times, vmsizes, vmpeaks, vmrsss = (np.empty(total_steps), np.empty(total_steps), np.empty(total_steps), np.empty(total_steps))
 
-    nest.Simulate(params['presimtime'] - params['dt'])
+    for d in range(presim_steps):
+        tic = time.time()
+        nest.Run(nest.min_delay)
+        times[d] = time.time() - tic
+        vmsizes[d] = get_vmsize()
+        vmpeaks[d] = get_vmpeak()
+        vmrsss[d] = get_rss()
+
+    if presim_remaining_time > 0:
+        tic = time.time()
+        nest.Run(presim_remaining_time)
+        times[presim_steps] = time.time() - tic
+        vmsizes[presim_steps] = get_vmsize()
+        vmpeaks[presim_steps] = get_vmpeak()
+        vmrsss[presim_steps] = get_rss()
+        presim_steps += 1
 
     PreparationTime = time.time() - tic
-
     tic = time.time()
 
-    nest.Simulate(params['simtime'])
+    for d in range(sim_steps):
+        tic = time.time()
+        nest.Run(nest.min_delay)
+        times[presim_steps + d] = time.time() - tic
+        vmsizes[presim_steps + d] = get_vmsize()
+        vmpeaks[presim_steps + d] = get_vmpeak()
+        vmrsss[presim_steps + d] = get_rss()
+
+    if sim_remaining_time > 0:
+        tic = time.time()
+        nest.Run(sim_remaining_time)
+        times[presim_steps + sim_steps] = time.time() - tic
+        vmsizes[presim_steps + sim_steps] = get_vmsize()
+        vmpeaks[presim_steps + sim_steps] = get_vmpeak()
+        vmrsss[presim_steps + sim_steps] = get_rss()
+        sim_steps += 1
 
     SimCPUTime = time.time() - tic
     total_memory = str(get_vmsize())
@@ -402,6 +437,13 @@ def run_simulation():
     with open(fn, 'w') as f:
         for key, value in d.items():
             f.write(key + ' ' + str(value) + '\n')
+
+    nest.Cleanup()
+
+    fn = '{fn}_{rank}_steps.dat'.format(fn=params['log_file'], rank=nest.Rank())
+    with open(fn, 'w') as f:
+        for d in range(presim_steps+sim_steps):
+            f.write(f'{times[d]} {vmsizes[d]} {vmpeaks[d]} {vmrsss[d]}\n')
 
 
 def compute_rate(sr):
