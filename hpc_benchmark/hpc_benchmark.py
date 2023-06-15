@@ -394,8 +394,6 @@ def run_simulation():
         vmrsss[presim_steps] = get_rss()
         presim_steps += 1
 
-    nest.Simulate(params['presimtime'] - params['dt'])
-
     PreparationTime = time.time() - tic
     tic = time.time()
 
