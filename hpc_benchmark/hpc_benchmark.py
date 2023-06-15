@@ -379,7 +379,7 @@ def run_simulation():
 
     for d in range(presim_steps):
         tic = time.time()
-        nest.Run(d * nest.min_delay)
+        nest.Run(nest.min_delay)
         times[d] = time.time() - tic
         vmsizes[d] = get_vmsize()
         vmpeaks[d] = get_vmpeak()
@@ -399,7 +399,7 @@ def run_simulation():
 
     for d in range(sim_steps):
         tic = time.time()
-        nest.Run(d * nest.min_delay)
+        nest.Run(nest.min_delay)
         times[presim_steps + d] = time.time() - tic
         vmsizes[presim_steps + d] = get_vmsize()
         vmpeaks[presim_steps + d] = get_vmpeak()
