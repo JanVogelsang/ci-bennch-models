@@ -261,7 +261,7 @@ def build_network():
         })
 
     BuildNodeTime = time.time() - tic
-    node_memory = str(memory_thisjob())
+    node_memory = str(get_vmsize())
 
     tic = time.time()
 
@@ -339,7 +339,7 @@ def build_network():
 
     # read out time used for building
     BuildEdgeTime = time.time() - tic
-    network_memory = str(memory_thisjob())
+    network_memory = str(get_vmsize())
 
     d = {'py_time_create': BuildNodeTime,
          'py_time_connect': BuildEdgeTime,
@@ -357,7 +357,7 @@ def run_simulation():
     nest.set_verbosity(M_INFO)
     nest.print_time = True
 
-    base_memory = str(memory_thisjob())
+    base_memory = str(get_vmsize())
 
     build_dict, sr = build_network()
 
@@ -366,7 +366,7 @@ def run_simulation():
     nest.Simulate(params['dt'])
 
     InitTime = time.time() - tic
-    init_memory = str(memory_thisjob())
+    init_memory = str(get_vmsize())
        
     tic = time.time()
 
@@ -379,7 +379,7 @@ def run_simulation():
     nest.Simulate(params['simtime'])
 
     SimCPUTime = time.time() - tic
-    total_memory = str(memory_thisjob())
+    total_memory = str(get_vmsize())
 
     average_rate = 0.0
     if params['record_spikes']:
@@ -417,10 +417,38 @@ def compute_rate(sr):
     return 1. * n_local_spikes / (n_local_neurons * simtime) * 1e3
 
 
-def memory_thisjob():
-    """Wrapper to obtain current memory usage"""
-    nest.ll_api.sr('memory_thisjob')
-    return nest.ll_api.spp()
+def _VmB(VmKey):
+    _proc_status = '/proc/%d/status' % os.getpid()
+    _scale = {'kB': 1024.0, 'mB': 1024.0*1024.0, 'KB': 1024.0, 'MB': 1024.0*1024.0}
+    # get pseudo file  /proc/<pid>/status
+    try:
+        t = open(_proc_status)
+        v = t.read()
+        t.close()
+    except:
+        return 0.0  # non-Linux?
+    # get VmKey line e.g. 'VmRSS:  9999  kB\n ...'
+    i = v.index(VmKey)
+    v = v[i:].split(None, 3)  # whitespace
+    if len(v) < 3:
+        return 0.0  # invalid format?
+    # convert Vm value to bytes
+    return float(v[1]) * _scale[v[2]]
+
+
+def get_vmsize(since=0.0):
+    """Return memory usage in bytes."""
+    return _VmB('VmSize:') - since
+
+
+def get_rss(since=0.0):
+    """Return resident memory usage in bytes."""
+    return _VmB('VmRSS:') - since
+
+
+def get_vmpeak(since=0.0):
+    """Return peak memory usage in bytes."""
+    return _VmB('VmPeak:') - since
 
 
 def lambertwm1(x):
