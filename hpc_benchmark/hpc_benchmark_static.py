@@ -383,6 +383,7 @@ def run_simulation():
         vmsizes[d] = get_vmsize()
         vmpeaks[d] = get_vmpeak()
         vmrsss[d] = get_rss()
+        spike_counts[d] = nest.local_spike_counter
 
     if presim_remaining_time > 0:
         tic = time.time()
@@ -391,6 +392,7 @@ def run_simulation():
         vmsizes[presim_steps] = get_vmsize()
         vmpeaks[presim_steps] = get_vmpeak()
         vmrsss[presim_steps] = get_rss()
+        spike_counts[presim_steps] = nest.local_spike_counter
         presim_steps += 1
 
     PreparationTime = time.time() - tic
@@ -403,6 +405,7 @@ def run_simulation():
         vmsizes[presim_steps + d] = get_vmsize()
         vmpeaks[presim_steps + d] = get_vmpeak()
         vmrsss[presim_steps + d] = get_rss()
+        spike_counts[presim_steps + d] = nest.local_spike_counter
 
     if sim_remaining_time > 0:
         tic = time.time()
@@ -411,6 +414,7 @@ def run_simulation():
         vmsizes[presim_steps + sim_steps] = get_vmsize()
         vmpeaks[presim_steps + sim_steps] = get_vmpeak()
         vmrsss[presim_steps + sim_steps] = get_rss()
+        spike_counts[presim_steps + sim_steps] = nest.local_spike_counter
         sim_steps += 1
 
     SimCPUTime = time.time() - tic
@@ -449,7 +453,7 @@ def run_simulation():
     fn = '{fn}_{rank}_steps.dat'.format(fn=params['log_file'], rank=nest.Rank())
     with open(fn, 'w') as f:
         for d in range(presim_steps+sim_steps):
-            f.write(f'{times[d]} {vmsizes[d]} {vmpeaks[d]} {vmrsss[d]}\n')
+            f.write(f'{times[d]} {vmsizes[d]} {vmpeaks[d]} {vmrsss[d]} {spike_counts[d]}\n')
 
 
 def compute_rate(sr):
