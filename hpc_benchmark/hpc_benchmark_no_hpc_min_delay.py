@@ -388,7 +388,7 @@ def run_simulation():
     sim_remaining_time = params['simtime'] - (sim_steps * nest.min_delay)
     
     total_steps = presim_steps + sim_steps + (1 if presim_remaining_time > 0 else 0) + (1 if sim_remaining_time > 0 else 0)
-    times, vmsizes, vmpeaks, vmrsss = (np.empty(total_steps), np.empty(total_steps), np.empty(total_steps), np.empty(total_steps))
+    times, vmsizes, vmpeaks, vmrsss, spike_counts = (np.empty(total_steps), np.empty(total_steps), np.empty(total_steps), np.empty(total_steps), np.empty(total_steps))
 
     for d in range(presim_steps):
         tic = time.time()
