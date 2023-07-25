@@ -8,7 +8,7 @@ In order to include a model to the JUBE workflow it needs to be able to receive 
 
 ```python
 params = {
-    'nvp': {num_vps},                  # total number of virtual processes
+    'num_threads': {threads_per_task},                  # total number of threads per process
     'scale': {N_SCALING},              # scaling factor of the network size
                                        # total network size = scale*11250 neurons
     'simtime': {model_time_sim},       # total simulation time in ms
