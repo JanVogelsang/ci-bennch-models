@@ -195,7 +195,7 @@ def build_network():
     model_params = brunel_params['model_params']
 
     # set global kernel parameters
-    nest.SetKernelStatus({'local_num_threads: params['num_threads'],
+    nest.SetKernelStatus({'local_num_threads': params['num_threads'],
                           'resolution': params['dt'],
                           'rng_seed': params['rng_seed'],
                           'overwrite_files': True,
