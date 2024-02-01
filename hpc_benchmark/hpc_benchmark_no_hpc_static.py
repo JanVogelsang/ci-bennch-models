@@ -419,6 +419,9 @@ def run_simulation():
         sim_steps += 1
 
     SimCPUTime = time.time() - tic
+    total_memory = str(get_vmsize())
+    total_memory_rss = str(get_rss())
+    total_memory_peak = str(get_vmpeak())
 
     average_rate = 0.0
     if params['record_spikes']:
@@ -429,8 +432,13 @@ def run_simulation():
          'py_time_simulate': SimCPUTime,
          'base_memory': base_memory,
          'init_memory': init_memory,
-         'presim_memory': presim_memory,
          'total_memory': total_memory,
+         'base_memory_rss': base_memory_rss,
+         'init_memory_rss': init_memory_rss,
+         'total_memory_rss': total_memory_rss,
+         'base_memory_peak': base_memory_peak,
+         'init_memory_peak': init_memory_peak,
+         'total_memory_peak': total_memory_peak,
          'average_rate': average_rate}
     d.update(build_dict)
     d.update(nest.kernel_status)
