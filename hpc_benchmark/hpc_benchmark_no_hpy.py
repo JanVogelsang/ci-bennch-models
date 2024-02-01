@@ -179,7 +179,7 @@ brunel_params = {
         'delay': {dendritic_delay},
         'axonal_delay': {axonal_delay},
         'alpha': 0.0513,
-        'lambda': 0.1,  # STDP step size
+        'lambda': {lambda},  # STDP step size
         'mu': 0.4,  # STDP weight dependence exponent(potentiation)
         'tau_plus': 15.0,  # time constant for potentiation
     },
