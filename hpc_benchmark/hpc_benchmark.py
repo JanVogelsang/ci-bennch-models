@@ -297,7 +297,7 @@ def build_network():
     nest.Connect(E_neurons, E_neurons,
                  {'rule': 'fixed_indegree', 'indegree': CE,
                   'allow_autapses': False, 'allow_multapses': True},
-                 {'synapse_model': 'stdp_pl_synapse_hom_hpc'})
+                 {'synapse_model': 'stdp_pl_synapse_hom_ax_delay_hpc'})
 
     nest.message(M_INFO, 'build_network',
                  'Connecting inhibitory -> excitatory population.')
