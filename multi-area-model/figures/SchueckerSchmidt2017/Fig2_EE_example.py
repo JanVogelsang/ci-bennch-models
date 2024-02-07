@@ -160,12 +160,12 @@ ax.set_yticks([0., 50.])
 input_params = {'rate_ext': 160.}
 network_params.update({'input_params': input_params})
 net = network1D(network_params)
-y = np.fromiter([net.Phi(x[j])[0] for j in range(len(x))], dtype=np.float)
+y = np.fromiter([net.Phi(x[j])[0] for j in range(len(x))], dtype=float)
 ax.plot(x, y, '0.3')
 
 x_long = np.arange(0, 100000., 500.)
 y_long = np.fromiter([net.Phi(x_long[j])[0]
-                      for j in range(len(x_long))], dtype=np.float)
+                      for j in range(len(x_long))], dtype=float)
 ax_inset.plot(x_long, y_long, '0.3')
 
 # Normal network with rate_ext = 160. without refractory period
@@ -174,7 +174,7 @@ network_params2 = copy.deepcopy(network_params)
 network_params2.update(
     {'neuron_params': {'single_neuron_dict': {'t_ref': 0.}}})
 net = network1D(network_params2)
-y = np.fromiter([net.Phi(x[j])[0] for j in range(len(x))], dtype=np.float)
+y = np.fromiter([net.Phi(x[j])[0] for j in range(len(x))], dtype=float)
 ax.plot(x, y, color=myred)
 
 # Noisefree case
@@ -183,7 +183,7 @@ network_params.update({'input_params': input_params})
 net = network1D(network_params)
 NP = net.params['neuron_params']['single_neuron_dict']
 y = np.fromiter([net.Phi_noisefree(x[j])
-                 for j in range(len(x))], dtype=np.float)
+                 for j in range(len(x))], dtype=float)
 
 ax.plot(x, y, color=myblue)
 
@@ -206,7 +206,7 @@ for i, rate_ext in enumerate([150., 160., 170.]):
     input_params = {'rate_ext': rate_ext}
     network_params.update({'input_params': input_params})
     net2 = network1D(network_params)
-    y = np.fromiter([net2.Phi(x[j])[0] for j in range(len(x))], dtype=np.float)
+    y = np.fromiter([net2.Phi(x[j])[0] for j in range(len(x))], dtype=float)
     ax.plot(x, y, colors[i])
     # Plot fixed points
     ind = np.where(np.abs(y - x) < 0.2)
@@ -291,7 +291,7 @@ network_params_stab = {'K': 420.,
 
 # Normal network with rate_ext = 160.
 net = network1D(network_params_base)
-y = np.fromiter([net.Phi(x[j])[0] for j in range(len(x))], dtype=np.float)
+y = np.fromiter([net.Phi(x[j])[0] for j in range(len(x))], dtype=float)
 ax.plot(x, y - x, color='k')
 a.plot(x, y - x, color='k')
 ax.hlines(0., 0., 70., linestyles='dashed')
@@ -300,7 +300,7 @@ fp_base = net.fsolve(([18.]))['rates'][0][0]
 
 # Normal network with rate_ext = 161.
 net = network1D(network_params_inc)
-y = np.fromiter([net.Phi(x[j])[0] for j in range(len(x))], dtype=np.float)
+y = np.fromiter([net.Phi(x[j])[0] for j in range(len(x))], dtype=float)
 ax.plot(x, y - x, color=myblue)
 a.plot(x, y - x, color=myblue, lw=4.)
 fp_inc = net.fsolve(([18.]))['rates'][0][0]
@@ -311,7 +311,7 @@ print(network_params['K'] + deltaK)
 network_params_stab.update({'K_stable': network_params['K'] + deltaK})
 print(network_params_stab)
 net = network1D(network_params_stab)
-y = np.fromiter([net.Phi(x[j])[0] for j in range(len(x))], dtype=np.float)
+y = np.fromiter([net.Phi(x[j])[0] for j in range(len(x))], dtype=float)
 ax.plot(x, y - x, color=myred)
 a.plot(x, y - x, color=myred)
 fp_s = net.fsolve(([18.]))['rates'][0][0]
