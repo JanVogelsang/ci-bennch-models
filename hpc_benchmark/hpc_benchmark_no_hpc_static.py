@@ -208,10 +208,10 @@ def build_network():
         nest.SetKernelStatus(extra_params)
 
     nest.message(M_INFO, 'build_network', 'Creating excitatory population.')
-    E_neurons = nest.Create('iaf_psc_alpha', NE, params=model_params)
+    E_neurons = nest.Create('iaf_psc_alpha_ax_delay', NE, params=model_params)
 
     nest.message(M_INFO, 'build_network', 'Creating inhibitory population.')
-    I_neurons = nest.Create('iaf_psc_alpha', NI, params=model_params)
+    I_neurons = nest.Create('iaf_psc_alpha_ax_delay', NI, params=model_params)
 
     if brunel_params['randomize_Vm']:
         nest.message(M_INFO, 'build_network',
