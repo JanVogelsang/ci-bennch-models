@@ -94,7 +94,6 @@ params = {
     'simtime': {model_time_sim},  # total simulation time in ms
     'presimtime': {model_time_presim},  # simulation time until reaching equilibrium
     'dt': 0.1,  # simulation step
-    'compressed_spikes': {compressed_spikes},  # whether to use spike compression
     'record_spikes': {record_spikes},  # switch to record spikes of excitatory neurons to file
     'rng_seed': {rng_seed},  # random number generator seed
     'path_name': '.',  # path where all files will have to be written
@@ -209,7 +208,6 @@ def build_network():
                           'resolution': params['dt'],
                           'rng_seed': params['rng_seed'],
                           'overwrite_files': True,
-                          'use_compressed_spikes': params['compressed_spikes'],
                           'keep_source_table': False})
     extra_params = {kwds}
     if extra_params:
