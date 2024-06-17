@@ -290,6 +290,8 @@ def build_network():
                  {'synapse_model': 'syn_ex'})
 
     if not os.path.exists("/p/home/jusers/vogelsang1/shared/connectivity/groups/connections_0.dat"):
+      params["presimtime"] = 0.
+      params["simtime"] = 0.
       nest.message(M_INFO, 'build_network',
                    'Connecting excitatory -> excitatory population.')
   
