@@ -75,7 +75,7 @@ References
 import numpy as np
 import os
 curr_working_dir = os.getcwd()
-os.chdir("/p/home/jusers/vogelsang1/shared/connectivity/groups/")
+os.chdir("/p/scratch/cjinb33/ci-bennch/jureca/userdata/vogelsang1/connectivity/groups/")
 import time
 import scipy.special as sp
 
@@ -289,7 +289,7 @@ def build_network():
     nest.Connect(E_stimulus, I_neurons, {'rule': 'all_to_all'},
                  {'synapse_model': 'syn_ex'})
 
-    if not os.path.exists("/p/home/jusers/vogelsang1/shared/connectivity/groups/connections_0.dat"):
+    if not os.path.exists("/p/scratch/cjinb33/ci-bennch/jureca/userdata/vogelsang1/connectivitygroups/connections_0.dat"):
       params["presimtime"] = 0.
       params["simtime"] = 0.
       nest.message(M_INFO, 'build_network',
