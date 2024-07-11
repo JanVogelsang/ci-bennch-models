@@ -324,6 +324,9 @@ def build_network():
                     'allow_autapses': False, 'allow_multapses': True},
                    {'synapse_model': 'syn_in'})
 
+       nest.Prepare()
+       exit(0)
+
     if params['record_spikes']:
         if params['num_threads'] != 1:
             local_neurons = nest.GetLocalNodeCollection(E_neurons)
