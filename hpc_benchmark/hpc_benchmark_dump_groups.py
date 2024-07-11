@@ -290,39 +290,42 @@ def build_network():
                  {'synapse_model': 'syn_ex'})
 
     if not "CONNECTIONS_DUMPED" in os.environ:
-      params["presimtime"] = 0.
-      params["simtime"] = 0.
-      nest.message(M_INFO, 'build_network',
+        params["presimtime"] = 0.
+        params["simtime"] = 0.
+        nest.message(M_INFO, 'build_network',
                    'Connecting excitatory -> excitatory population.')
   
-      nest.Connect(E_neurons, E_neurons,
+        nest.Connect(E_neurons, E_neurons,
                    {'rule': 'fixed_indegree', 'indegree': CE,
                     'allow_autapses': False, 'allow_multapses': True},
                    {'synapse_model': 'stdp_pl_synapse_hom_hpc'})
   
-      nest.message(M_INFO, 'build_network',
+        nest.message(M_INFO, 'build_network',
                    'Connecting inhibitory -> excitatory population.')
   
-      nest.Connect(I_neurons, E_neurons,
+        nest.Connect(I_neurons, E_neurons,
                    {'rule': 'fixed_indegree', 'indegree': CI,
                     'allow_autapses': False, 'allow_multapses': True},
                    {'synapse_model': 'syn_in'})
   
-      nest.message(M_INFO, 'build_network',
+        nest.message(M_INFO, 'build_network',
                    'Connecting excitatory -> inhibitory population.')
   
-      nest.Connect(E_neurons, I_neurons,
+        nest.Connect(E_neurons, I_neurons,
                    {'rule': 'fixed_indegree', 'indegree': CE,
                     'allow_autapses': False, 'allow_multapses': True},
                    {'synapse_model': 'syn_ex'})
   
-      nest.message(M_INFO, 'build_network',
+        nest.message(M_INFO, 'build_network',
                    'Connecting inhibitory -> inhibitory population.')
   
-      nest.Connect(I_neurons, I_neurons,
+        nest.Connect(I_neurons, I_neurons,
                    {'rule': 'fixed_indegree', 'indegree': CI,
                     'allow_autapses': False, 'allow_multapses': True},
                    {'synapse_model': 'syn_in'})
+
+        nest.Prepare()
+        exit(0)
 
     if params['record_spikes']:
         if params['num_threads'] != 1:
