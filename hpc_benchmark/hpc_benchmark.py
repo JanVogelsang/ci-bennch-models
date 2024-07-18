@@ -507,7 +507,7 @@ def run_simulation():
 
 
     if params['profile_memory']:
-        fn = os.path.join(params["path_name"], '{fn}_{rank}_steps.dat'.format(fn=params['log_file'], rank=nest.Rank()), rank=nest.Rank()))
+        fn = os.path.join(params["path_name"], '{fn}_{rank}_steps.dat'.format(fn=params['log_file'], rank=nest.Rank()))
         with open(fn, 'w') as f:
             f.write('time ' + ' '.join(step_data_keys) + '\n')
             for d in range(presim_steps + sim_steps):
