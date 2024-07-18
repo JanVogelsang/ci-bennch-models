@@ -508,14 +508,14 @@ def run_simulation():
 
     nest.Cleanup()
 
-    fn = '{fn}_{rank}.dat'.format(fn=params['log_file'], rank=nest.Rank())
+    fn = os.path.join(params["path_name"], '{fn}_{rank}.dat'.format(fn=params['log_file'], rank=nest.Rank()))
     with open(fn, 'w') as f:
         for key, value in d.items():
             f.write(key + ' ' + str(value) + '\n')
 
 
     if params['profile_memory']:
-        fn = '{fn}_{rank}_steps.dat'.format(fn=params['log_file'], rank=nest.Rank())
+        fn = os.path.join(params["path_name"], '{fn}_{rank}_steps.dat'.format(fn=params['log_file'], rank=nest.Rank()), rank=nest.Rank()))
         with open(fn, 'w') as f:
             f.write('time ' + ' '.join(step_data_keys) + '\n')
             for d in range(presim_steps + sim_steps):
