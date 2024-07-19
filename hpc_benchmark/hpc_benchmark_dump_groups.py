@@ -325,6 +325,7 @@ def build_network():
                    {'synapse_model': 'syn_in'})
 
         nest.Prepare()
+        print(nest.kernel_status)
         exit(0)
 
     if params['record_spikes']:
