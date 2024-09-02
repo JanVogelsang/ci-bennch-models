@@ -427,7 +427,7 @@ def run_simulation():
                    'init_memory_peak': init_memory_peak,
                    'total_memory_peak': total_memory_peak}
 
-        d.update(memory_dict)
+    d.update(memory_dict)
 
     d.update(build_dict)
     final_kernel_status = nest.kernel_status
