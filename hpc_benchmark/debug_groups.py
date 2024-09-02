@@ -373,18 +373,18 @@ def run_simulation():
     for d in range(presim_steps):
         nest.Run(nest.min_delay)
         times[d] = time.time() - tic
-        vmsizes[presim_steps] = get_vmsize()
-        vmpeaks[presim_steps] = get_vmpeak()
-        vmrsss[presim_steps] = get_rss()
+        vmsizes[d] = get_vmsize()
+        vmpeaks[d] = get_vmpeak()
+        vmrsss[d] = get_rss()
         for key in step_data_keys:
             step_data[key][d] = getattr(nest, key)
 
     if presim_remaining_time > 0:
         nest.Run(presim_remaining_time)
         times[presim_steps] = time.time() - tic
-        vmsizes[presim_steps + sim_steps] = get_vmsize()
-        vmpeaks[presim_steps + sim_steps] = get_vmpeak()
-        vmrsss[presim_steps + sim_steps] = get_rss()
+        vmsizes[presim_steps] = get_vmsize()
+        vmpeaks[presim_steps] = get_vmpeak()
+        vmrsss[presim_steps] = get_rss()
         for key in step_data_keys:
             step_data[key][presim_steps] = getattr(nest, key)
         presim_steps += 1
@@ -398,12 +398,18 @@ def run_simulation():
     for d in range(sim_steps):
         nest.Run(nest.min_delay)
         times[presim_steps + d] = time.time() - tic
+        vmsizes[presim_steps + d] = get_vmsize()
+        vmpeaks[presim_steps + d] = get_vmpeak()
+        vmrsss[presim_steps + d] = get_rss()
         for key in step_data_keys:
             step_data[key][presim_steps + d] = getattr(nest, key)
 
     if sim_remaining_time > 0:
         nest.Run(sim_remaining_time)
         times[presim_steps + sim_steps] = time.time() - tic
+        vmsizes[presim_steps + sim_steps] = get_vmsize()
+        vmpeaks[presim_steps + sim_steps] = get_vmpeak()
+        vmrsss[presim_steps + sim_steps] = get_rss()
         for key in step_data_keys:
             step_data[key][presim_steps + sim_steps] = getattr(nest, key)
         sim_steps += 1
