@@ -447,7 +447,10 @@ def run_simulation():
     for timer in timers:
         try:
             d[timer + '_presim'] = intermediate_kernel_status[timer]
-            d[timer] -= intermediate_kernel_status[timer]
+            if type(d[timer]) == tuple or type(d[timer]) == list:
+                d[timer] = tuple(d[timer][tid] - intermediate_kernel_status[timer][tid] for tid in range(len(d[timer])))
+            else:
+                d[timer] -= intermediate_kernel_status[timer]
         except KeyError:
             # KeyError if compiled without detailed timers, except time_simulate
             continue
