@@ -448,7 +448,11 @@ def run_simulation():
         try:
             d[timer + '_presim'] = intermediate_kernel_status[timer]
             if type(d[timer]) == tuple or type(d[timer]) == list:
-                d[timer] = tuple(d[timer][tid] - intermediate_kernel_status[timer][tid] for tid in range(len(d[timer])))
+                timer_array = tuple(d[timer][tid] - intermediate_kernel_status[timer][tid] for tid in range(len(d[timer])))
+                d[timer] = timer_array[0]
+                d[timer + "_max"] = max(timer_array)
+                d[timer + "_max"] = min(timer_array)
+                d[timer + "_avg"] = np.mean(timer_array)
             else:
                 d[timer] -= intermediate_kernel_status[timer]
         except KeyError:
