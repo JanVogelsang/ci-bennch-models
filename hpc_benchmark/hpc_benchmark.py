@@ -491,9 +491,8 @@ def run_simulation():
     d.update(final_kernel_status)
 
     # Subtract timer information from presimulation period
-    timers = ['time_collocate_spike_data', 'time_communicate_prepare',
-              'time_communicate_spike_data', 'time_deliver_spike_data',
-              'time_gather_spike_data', 'time_update', 'time_simulate']
+    timers = ['time_collocate_spike_data', 'time_communicate_prepare', 'time_communicate_spike_data', 'time_communicate_target_data', 'time_construction_connect', 'time_construction_create', 'time_deliver_secondary_data', 'time_deliver_spike_data', 'time_gather_secondary_data', 'time_gather_spike_data', 'time_gather_target_data', 'time_omp_synchronization_construction', 'time_omp_synchronization_simulation', 'time_mpi_synchronization', 'time_simulate', 'time_update']
+    timers.append([timer + '_cpu' for timer in timers])
 
     for timer in timers:
         try:
