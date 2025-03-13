@@ -488,6 +488,7 @@ def run_simulation():
         except KeyError:
             # KeyError if compiled without detailed timers, except time_simulate
             continue
+    d["local_spike_counter"] = sum(d["local_spike_counter"])
     print(d)
 
     nest.Cleanup()

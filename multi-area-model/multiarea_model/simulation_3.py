@@ -359,7 +359,8 @@ class Simulation:
              'init_memory': self.init_memory,
              'total_memory': self.total_memory}
         d.update(nest.GetKernelStatus())
-        print(d)
+        d["local_spike_counter"] = sum(d["local_spike_counter"])
+    print(d)
 
         fn = os.path.join(self.data_dir,
                           'recordings',
