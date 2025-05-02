@@ -215,6 +215,10 @@ def build_network():
                           'overwrite_files': True,
                           'use_compressed_spikes': params['compressed_spikes'],
                           'keep_source_table': False})
+
+    if params['use_adjacency_lists']:
+        nest.use_adjacency_list = True
+
     extra_params = {kwds}
     if extra_params:
         nest.SetKernelStatus(extra_params)
