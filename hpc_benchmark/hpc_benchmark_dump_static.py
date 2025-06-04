@@ -102,6 +102,7 @@ params = {
     'log_file': 'logfile',  # naming scheme for the log files
     'step_data_keys': '{step_data_keys}',  # metrics to be recorded at each time step
     'profile_memory': False, # record memory profile
+    'use_target_ptr': {use_target_ptr}
 }
 step_data_keys = params['step_data_keys'].split(',')
 
@@ -271,11 +272,13 @@ def build_network():
 
     tic = time.time()
 
-    nest.SetDefaults('static_synapse_hpc', {'delay': brunel_params['delay']})
-    nest.CopyModel('static_synapse_hpc', 'syn_ex',
-                   {'weight': JE_pA})
-    nest.CopyModel('static_synapse_hpc', 'syn_in',
-                   {'weight': brunel_params['g'] * JE_pA})
+    if params['use_target_ptr']:
+        synapse_model = 'static_synapse_ptr'
+    else:
+        synapse_model = 'static_synapse_hpc'
+    nest.SetDefaults(synapse_model, {'delay': brunel_params['delay']})
+    nest.CopyModel(synapse_model, 'syn_ex', {'weight': JE_pA})
+    nest.CopyModel(synapse_model, 'syn_in', {'weight': brunel_params['g'] * JE_pA})
 
     stdp_params['weight'] = JE_pA
     nest.SetDefaults('stdp_pl_synapse_hom_hpc', stdp_params)
