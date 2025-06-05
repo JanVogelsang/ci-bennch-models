@@ -211,8 +211,7 @@ def build_network():
                           'resolution': params['dt'],
                           'rng_seed': params['rng_seed'],
                           'overwrite_files': True,
-                          'keep_source_table': False,
-                          'num_targets_completed_before_forming_connections': params['num_targets_completed_before_forming_connections']})
+                          'keep_source_table': False})
 
     try:
         num_targets_completed_before_forming_connections = int(params['num_targets_completed_before_forming_connections'])
