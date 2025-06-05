@@ -100,7 +100,7 @@ params = {
     'log_file': 'logfile',  # naming scheme for the log files
     'step_data_keys': '{step_data_keys}',  # metrics to be recorded at each time step
     'profile_memory': False, # record memory profile
-    'use_target_ptr': {use_target_ptr}
+    'use_target_ptr': {use_target_ptr},
     'num_targets_completed_before_forming_connections': '{num_targets_completed_before_forming_connections}'
 }
 step_data_keys = params['step_data_keys'].split(',')
