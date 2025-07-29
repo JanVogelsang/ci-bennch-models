@@ -74,6 +74,8 @@ References
 
 import numpy as np
 import os
+curr_working_dir = os.getcwd()
+os.chdir(os.environ["LOCALSCRATCH"])
 import time
 import scipy.special as sp
 
@@ -96,12 +98,11 @@ params = {
     'dt': 0.1,  # simulation step
     'record_spikes': {record_spikes},  # switch to record spikes of excitatory neurons to file
     'rng_seed': {rng_seed},  # random number generator seed
-    'path_name': '.',  # path where all files will have to be written
+    'path_name': curr_working_dir,  # path where all files will have to be written
     'log_file': 'logfile',  # naming scheme for the log files
     'step_data_keys': '{step_data_keys}',  # metrics to be recorded at each time step
     'profile_memory': False, # record memory profile
-    'use_target_ptr': {use_target_ptr},
-    'num_targets_completed_before_forming_connections': '{num_targets_completed_before_forming_connections}'
+    'use_target_ptr': {use_target_ptr}
 }
 step_data_keys = params['step_data_keys'].split(',')
 
@@ -156,7 +157,7 @@ brunel_params = {
         'tau_syn_in': tau_syn,
         'tau_minus': 30.0,  # time constant for STDP(depression)
         # V can be randomly initialized see below
-        'V_m': 5.7,  # mean value of membrane potential
+        'V_m': 5.7  # mean value of membrane potential
     },
 
     ####################################################################
@@ -212,13 +213,6 @@ def build_network():
                           'rng_seed': params['rng_seed'],
                           'overwrite_files': True,
                           'keep_source_table': False})
-
-    try:
-        num_targets_completed_before_forming_connections = int(params['num_targets_completed_before_forming_connections'])
-        nest.num_targets_completed_before_forming_connections = num_targets_completed_before_forming_connections
-    except:
-        pass
-
     extra_params = {kwds}
     if extra_params:
         nest.SetKernelStatus(extra_params)
@@ -286,18 +280,8 @@ def build_network():
     nest.CopyModel(synapse_model, 'syn_ex', {'weight': JE_pA})
     nest.CopyModel(synapse_model, 'syn_in', {'weight': brunel_params['g'] * JE_pA})
 
-    nest.message(M_INFO, 'build_network', 'Connecting stimulus generators.')
-
-    nest.message(M_INFO, 'build_network',
-               'Connecting excitatory -> excitatory population.')
-
-    nest.Connect(E_neurons, E_neurons,
-               {'rule': 'fixed_indegree', 'indegree': CE,
-                'allow_autapses': False, 'allow_multapses': True},
-               {'synapse_model': 'syn_ex'})
-
-    nest.message(M_INFO, 'build_network',
-               'Connecting inhibitory -> excitatory population.')
+    stdp_params['weight'] = JE_pA
+    nest.SetDefaults('stdp_pl_synapse_hom_hpc', stdp_params)
 
     nest.message(M_INFO, 'build_network', 'Connecting stimulus generators.')
 
@@ -308,26 +292,44 @@ def build_network():
     nest.Connect(E_stimulus, I_neurons, {'rule': 'all_to_all'},
                  {'synapse_model': 'syn_ex'})
 
-    nest.Connect(I_neurons, E_neurons,
-               {'rule': 'fixed_indegree', 'indegree': CI,
-                'allow_autapses': False, 'allow_multapses': True},
-               {'synapse_model': 'syn_in'})
+    if not "CONNECTIONS_DUMPED" in os.environ:
+        params["presimtime"] = 0.
+        params["simtime"] = 0.
+        nest.message(M_INFO, 'build_network',
+                   'Connecting excitatory -> excitatory population.')
+  
+        nest.Connect(E_neurons, E_neurons,
+                   {'rule': 'fixed_indegree', 'indegree': CE,
+                    'allow_autapses': False, 'allow_multapses': True},
+                   {'synapse_model': 'syn_ex'})
+  
+        nest.message(M_INFO, 'build_network',
+                   'Connecting inhibitory -> excitatory population.')
+  
+        nest.Connect(I_neurons, E_neurons,
+                   {'rule': 'fixed_indegree', 'indegree': CI,
+                    'allow_autapses': False, 'allow_multapses': True},
+                   {'synapse_model': 'syn_in'})
+  
+        nest.message(M_INFO, 'build_network',
+                   'Connecting excitatory -> inhibitory population.')
+  
+        nest.Connect(E_neurons, I_neurons,
+                   {'rule': 'fixed_indegree', 'indegree': CE,
+                    'allow_autapses': False, 'allow_multapses': True},
+                   {'synapse_model': 'syn_ex'})
+  
+        nest.message(M_INFO, 'build_network',
+                   'Connecting inhibitory -> inhibitory population.')
+  
+        nest.Connect(I_neurons, I_neurons,
+                   {'rule': 'fixed_indegree', 'indegree': CI,
+                    'allow_autapses': False, 'allow_multapses': True},
+                   {'synapse_model': 'syn_in'})
 
-    nest.message(M_INFO, 'build_network',
-               'Connecting excitatory -> inhibitory population.')
-
-    nest.Connect(E_neurons, I_neurons,
-               {'rule': 'fixed_indegree', 'indegree': CE,
-                'allow_autapses': False, 'allow_multapses': True},
-               {'synapse_model': 'syn_ex'})
-
-    nest.message(M_INFO, 'build_network',
-               'Connecting inhibitory -> inhibitory population.')
-
-    nest.Connect(I_neurons, I_neurons,
-               {'rule': 'fixed_indegree', 'indegree': CI,
-                'allow_autapses': False, 'allow_multapses': True},
-               {'synapse_model': 'syn_in'})
+        nest.Prepare()
+        print(nest.kernel_status)
+        exit(0)
 
     if params['record_spikes']:
         if params['num_threads'] != 1:
@@ -498,7 +500,7 @@ def run_simulation():
     d.update(final_kernel_status)
 
     # Subtract timer information from presimulation period
-    presim_timers = ['time_collocate_spike_data', 'time_communicate_spike_data', 'time_deliver_secondary_data', 'time_deliver_spike_data', 'time_gather_secondary_data', 'time_gather_spike_data', 'time_omp_synchronization_simulation', 'time_mpi_synchronization', 'time_simulate', 'time_update', 'time_deliver_synaptic_spike_data']
+    presim_timers = ['time_collocate_spike_data', 'time_communicate_spike_data', 'time_deliver_secondary_data', 'time_deliver_spike_data', 'time_gather_secondary_data', 'time_gather_spike_data', 'time_omp_synchronization_simulation', 'time_mpi_synchronization', 'time_simulate', 'time_update']
     presim_timers.extend([timer + '_cpu' for timer in presim_timers])
     other_timers = ['time_communicate_prepare', 'time_communicate_target_data', 'time_construction_connect', 'time_construction_create', 'time_gather_target_data', 'time_omp_synchronization_construction']
     other_timers.extend([timer + '_cpu' for timer in other_timers])
