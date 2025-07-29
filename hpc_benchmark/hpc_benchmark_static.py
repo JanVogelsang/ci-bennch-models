@@ -156,7 +156,7 @@ brunel_params = {
         'tau_syn_in': tau_syn,
         'tau_minus': 30.0,  # time constant for STDP(depression)
         # V can be randomly initialized see below
-        'V_m': 5.7  # mean value of membrane potential
+        'V_m': 5.7,  # mean value of membrane potential
     },
 
     ####################################################################
@@ -286,17 +286,7 @@ def build_network():
     nest.CopyModel(synapse_model, 'syn_ex', {'weight': JE_pA})
     nest.CopyModel(synapse_model, 'syn_in', {'weight': brunel_params['g'] * JE_pA})
 
-    stdp_params['weight'] = JE_pA
-    nest.SetDefaults('stdp_pl_synapse_hom_hpc', stdp_params)
-
     nest.message(M_INFO, 'build_network', 'Connecting stimulus generators.')
-
-    # Connect Poisson generator to neuron
-
-    nest.Connect(E_stimulus, E_neurons, {'rule': 'all_to_all'},
-                 {'synapse_model': 'syn_ex'})
-    nest.Connect(E_stimulus, I_neurons, {'rule': 'all_to_all'},
-                 {'synapse_model': 'syn_ex'})
 
     nest.message(M_INFO, 'build_network',
                'Connecting excitatory -> excitatory population.')
@@ -308,6 +298,15 @@ def build_network():
 
     nest.message(M_INFO, 'build_network',
                'Connecting inhibitory -> excitatory population.')
+
+    nest.message(M_INFO, 'build_network', 'Connecting stimulus generators.')
+
+    # Connect Poisson generator to neuron
+
+    nest.Connect(E_stimulus, E_neurons, {'rule': 'all_to_all'},
+                 {'synapse_model': 'syn_ex'})
+    nest.Connect(E_stimulus, I_neurons, {'rule': 'all_to_all'},
+                 {'synapse_model': 'syn_ex'})
 
     nest.Connect(I_neurons, E_neurons,
                {'rule': 'fixed_indegree', 'indegree': CI,
@@ -499,7 +498,7 @@ def run_simulation():
     d.update(final_kernel_status)
 
     # Subtract timer information from presimulation period
-    presim_timers = ['time_collocate_spike_data', 'time_communicate_spike_data', 'time_deliver_secondary_data', 'time_deliver_spike_data', 'time_gather_secondary_data', 'time_gather_spike_data', 'time_omp_synchronization_simulation', 'time_mpi_synchronization', 'time_simulate', 'time_update']
+    presim_timers = ['time_collocate_spike_data', 'time_communicate_spike_data', 'time_deliver_secondary_data', 'time_deliver_spike_data', 'time_gather_secondary_data', 'time_gather_spike_data', 'time_omp_synchronization_simulation', 'time_mpi_synchronization', 'time_simulate', 'time_update', 'time_deliver_synaptic_spike_data']
     presim_timers.extend([timer + '_cpu' for timer in presim_timers])
     other_timers = ['time_communicate_prepare', 'time_communicate_target_data', 'time_construction_connect', 'time_construction_create', 'time_gather_target_data', 'time_omp_synchronization_construction']
     other_timers.extend([timer + '_cpu' for timer in other_timers])
