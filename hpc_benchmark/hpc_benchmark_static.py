@@ -303,9 +303,9 @@ def build_network():
 
     # Connect Poisson generator to neuron
 
-    nest.Connect(E_stimulus, E_neurons, {'rule': 'all_to_all'},
+    nest.Connect(E_stimulus, E_neurons, {'rule': 'fixed_indegree', 'indegree': 1},
                  {'synapse_model': 'syn_ex'})
-    nest.Connect(E_stimulus, I_neurons, {'rule': 'all_to_all'},
+    nest.Connect(E_stimulus, I_neurons, {'rule': 'fixed_indegree', 'indegree': 1},
                  {'synapse_model': 'syn_ex'})
 
     nest.Connect(I_neurons, E_neurons,
