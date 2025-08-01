@@ -274,7 +274,7 @@ def build_network():
     tic = time.time()
 
     if params['use_target_ptr']:
-        synapse_model = 'static_synapse_ptr'
+        synapse_model = 'static_synapse'
     else:
         synapse_model = 'static_synapse_hpc'
     nest.SetDefaults(synapse_model, {'delay': brunel_params['delay']})
