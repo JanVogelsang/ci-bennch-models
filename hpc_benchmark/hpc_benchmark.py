@@ -438,10 +438,11 @@ def run_simulation():
                 step_data[key][presim_steps + sim_steps] = getattr(nest, key)
             sim_steps += 1
     else:
+        base_memory = str(get_vmsize())
+
         build_dict, sr = build_network()
 
         tic = time.time()
-        base_memory = str(get_vmsize())
         nest.Prepare()
 
         InitTime = time.time() - tic
