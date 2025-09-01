@@ -225,7 +225,7 @@ input_params = {
     'poisson_input': True,
 
     # synapse type for Poisson input
-    'syn_type_ext': 'static_synapse',
+    'syn_type_ext': 'static_synapse4',
 
     # Rate of the Poissonian spike generator (in spikes/s).
     'rate_ext': 10.,

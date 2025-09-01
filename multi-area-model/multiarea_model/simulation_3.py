@@ -628,7 +628,7 @@ def connect(simulation,
                 mean_delay = s / v
 
             syn_spec = {
-                'synapse_model': 'static_synapse',
+                'synapse_model': 'static_synapse4',
                 'weight': nest.math.redraw(
                     nest.random.normal(
                         mean=W[target][source],
