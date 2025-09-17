@@ -350,11 +350,11 @@ def run_simulation():
     nest.ResetKernel()
     nest.set_verbosity(M_INFO)
 
-    if params['profile_memory']:
-        base_memory = str(get_vmsize())
-        base_memory_rss = str(get_rss())
-        base_memory_peak = str(get_vmpeak())
+    base_memory = str(get_vmsize())
+    base_memory_rss = str(get_rss())
+    base_memory_peak = str(get_vmpeak())
 
+    if params['profile_memory']:
         build_dict, sr = build_network()
 
         tic = time.time()
@@ -431,6 +431,8 @@ def run_simulation():
 
         InitTime = time.time() - tic
         init_memory = str(get_vmsize())
+        init_memory_rss = str(get_rss())
+        init_memory_peak = str(get_vmpeak())
 
         tic = time.time()
         nest.Run(params['presimtime'])
@@ -458,15 +460,12 @@ def run_simulation():
          'init_memory': init_memory,
          'total_memory': total_memory}
 
-    if params['profile_memory']:
-        memory_dict = {'base_memory_rss': base_memory_rss,
-                       'init_memory_rss': init_memory_rss,
-                       'total_memory_rss': total_memory_rss,
-                       'base_memory_peak': base_memory_peak,
-                       'init_memory_peak': init_memory_peak,
-                       'total_memory_peak': total_memory_peak}
-
-        d.update(memory_dict)
+    d.update({'base_memory_rss': base_memory_rss,
+                    'init_memory_rss': init_memory_rss,
+                    'total_memory_rss': total_memory_rss,
+                    'base_memory_peak': base_memory_peak,
+                    'init_memory_peak': init_memory_peak,
+                    'total_memory_peak': total_memory_peak})
 
     d.update(build_dict)
     final_kernel_status = nest.kernel_status
