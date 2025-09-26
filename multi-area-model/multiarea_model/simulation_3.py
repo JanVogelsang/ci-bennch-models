@@ -546,7 +546,8 @@ class Area:
                 nrec = int(self.simulation.params['recording_dict']['Nrec_vm_fraction'] *
                            self.neuron_numbers[pop])
                 nest.Connect(self.simulation.voltmeter,
-                             self.gids[pop][:nrec])
+                             self.gids[pop][:nrec],
+                             syn_spec={'synapse_model': 'static_synapse4'})
         if self.network.params['input_params']['poisson_input']:
             self.poisson_generators = []
             for pop in self.populations:
@@ -679,7 +680,7 @@ def connect(simulation,
                         std=mean_delay * network.params['delay_params']['delay_rel']
                         ),
                     min=simulation.params['dt'] - 0.5 * nest.resolution,
-                    max=np.Inf)}
+                    max=np.inf)}
 
             nest.Connect(source_area.gids[source],
                          target_area.gids[target],

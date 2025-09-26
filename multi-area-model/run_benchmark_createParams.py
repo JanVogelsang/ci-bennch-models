@@ -81,8 +81,8 @@ elif NEST_version == '3':
 print(M.label)
 print(M.simulation.label)
 
-p, r = M.theory.integrate_siegert()
-print("Mean-field theory predicts an average "
-      "rate of {0:.3f} spikes/s across all populations.".format(np.mean(r[:, -1])))
+# p, r = M.theory.integrate_siegert()
+# print("Mean-field theory predicts an average "
+#      "rate of {0:.3f} spikes/s across all populations.".format(np.mean(r[:, -1])))
 
 start_job(M.simulation.label, data_path, data_folder_hash)
