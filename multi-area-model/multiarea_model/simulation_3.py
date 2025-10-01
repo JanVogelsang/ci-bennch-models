@@ -410,7 +410,7 @@ class Simulation:
                     print(e)
 
             other_timers = ['time_communicate_prepare', 'time_communicate_target_data', 'time_construction_connect', 'time_construction_create', 'time_gather_target_data', 'time_omp_synchronization_construction']
-    other_timers.extend([timer + '_cpu' for timer in other_timers])
+            other_timers.extend([timer + '_cpu' for timer in other_timers])
             for timer in other_timers:
                 try:
                     if type(d[timer]) == tuple or type(d[timer]) == list:
