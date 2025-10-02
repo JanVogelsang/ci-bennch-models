@@ -348,7 +348,12 @@ class Simulation:
             return mem
 
     def logging_presim(self):
-        timer_keys = ['time_collocate_spike_data', 'time_communicate_spike_data', 'time_deliver_secondary_data', 'time_deliver_spike_data', 'time_gather_secondary_data', 'time_gather_spike_data', 'time_omp_synchronization_simulation', 'time_mpi_synchronization', 'time_simulate', 'time_update', 'time_deliver_synaptic_spike_data']
+        timer_keys = ['time_collocate_spike_data', 'time_communicate_spike_data', 'time_deliver_secondary_data', 'time_deliver_spike_data', 'time_gather_secondary_data', 'time_gather_spike_data', 'time_omp_synchronization_simulation', 'time_mpi_synchronization', 'time_simulate', 'time_update']
+        try:
+            nest.GetKernelStatus(['time_deliver_synaptic_spike_data'])
+            timer_keys.append('time_deliver_synaptic_spike_data')
+        except:
+            pass
         timer_keys.extend([timer + '_cpu' for timer in timer_keys])
 
         values = nest.GetKernelStatus(timer_keys)
