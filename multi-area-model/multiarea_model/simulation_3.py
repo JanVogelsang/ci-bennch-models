@@ -163,7 +163,8 @@ class Simulation:
                               'rng_seed': rng_seed,
                               'spike_buffer_grow_extra': self.params['spike_buffer_grow_extra'],
                               'spike_buffer_shrink_limit': self.params['spike_buffer_shrink_limit'],
-                              'spike_buffer_shrink_spare': self.params['spike_buffer_shrink_spare']})
+                              'spike_buffer_shrink_spare': self.params['spike_buffer_shrink_spare'],
+                              'max_buffer_size_target_data': 16777216 // num_processes * num_processes})
 
         # nest.set_verbosity('M_INFO')
 
