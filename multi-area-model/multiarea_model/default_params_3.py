@@ -13,6 +13,7 @@ Maximilian Schmidt
 
 from config import base_path
 import json
+import time
 import os
 
 import numpy as np
@@ -24,10 +25,16 @@ complete_area_list = ['V1', 'V2', 'VP', 'V3', 'V3A', 'MT', 'V4t', 'V4', 'VOT', '
 
 population_list = ['23E', '23I', '4E', '4I', '5E', '5I', '6E', '6I']
 
-f1 = open(os.path.join(base_path, 'multiarea_model/data_multiarea',
-                       'viscortex_raw_data.json'), 'r')
-raw_data = json.load(f1)
-f1.close()
+file_read = False
+while not file_read:
+    try:
+        with open(os.path.join(base_path, 'multiarea_model/data_multiarea', 'viscortex_raw_data.json'), 'r') as f1:
+            raw_data = json.load(f1)
+            file_read = True
+    except Exception as e:
+        print(e)
+        time.sleep(5)
+
 av_indegree_Cragg = raw_data['av_indegree_Cragg']
 av_indegree_OKusky = raw_data['av_indegree_OKusky']
 
