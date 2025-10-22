@@ -589,7 +589,7 @@ class Area:
                 W_ext = self.network.W[self.name][pop]['external']['external']
                 pg = nest.Create('poisson_generator')
                 pg.set({'rate': self.network.params['input_params']['rate_ext'] * K_ext})
-                syn_spec = {'weight': W_ext}
+                syn_spec = {'weight': W_ext, syn_spec={'synapse_model': 'static_synapse4'}}
                 nest.Connect(pg,
                              self.gids[pop],
                              syn_spec=syn_spec)
@@ -628,7 +628,7 @@ class Area:
         for pop in self.populations:
             for source_pop in self.network.structure[source_area_name]:
                 syn_spec = {'weight': W[pop][source_pop],
-                            'delay': delay}
+                            'delay': delay, syn_spec={'synapse_model': 'static_synapse4'}}
                 K = synapses[pop][source_pop] / self.neuron_numbers[pop]
 
                 if input_type == 'het_current_nonstat':

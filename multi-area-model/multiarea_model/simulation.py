@@ -528,7 +528,7 @@ class Area:
                 nrec = int(self.simulation.params['recording_dict']['Nrec_vm_fraction'] *
                            self.neuron_numbers[pop])
                 nest.Connect(self.simulation.voltmeter,
-                             tuple(range(self.gids[pop][0], self.gids[pop][0] + nrec + 1)))
+                             tuple(range(self.gids[pop][0], self.gids[pop][0] + nrec + 1)), syn_spec={'synapse_model': 'static_synapse4'})
         if self.network.params['input_params']['poisson_input']:
             self.poisson_generators = []
             for pop in self.populations:

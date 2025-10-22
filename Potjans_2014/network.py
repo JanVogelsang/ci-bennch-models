@@ -714,9 +714,9 @@ class Network:
                     raise Exception('NEST version unknown.')
             if 'voltmeter' in self.sim_dict['rec_dev']:
                 if self.nest_version == '3':
-                    nest.Connect(self.voltmeters[i], target_pop)
+                    nest.Connect(self.voltmeters[i], target_pop, syn_spec={'synapse_model': 'static_synapse4'})
                 elif self.nest_version == '2':
-                    nest.Connect([self.voltmeters[i]], target_pop)
+                    nest.Connect([self.voltmeters[i]], target_pop, syn_spec={'synapse_model': 'static_synapse4'})
                 else:
                     raise Exception('NEST version unknown.')
 
@@ -813,4 +813,4 @@ class Network:
             print('Connecting DC generators.')
 
         for i, target_pop in enumerate(self.pops):
-            nest.Connect(self.dc_stim_input[i], target_pop)
+            nest.Connect(self.dc_stim_input[i], target_pop, syn_spec={'synapse_model': 'static_synapse4'})
