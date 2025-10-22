@@ -656,7 +656,7 @@ def connect(simulation,
                          'sigma': mean_delay * network.params['delay_params']['delay_rel']}
             syn_spec = {'weight': syn_weight,
                         'delay': syn_delay,
-                        'model': 'static_synapse'}
+                        'model': 'static_synapse4'}
 
             nest.Connect(tuple(range(source_area.gids[source][0],
                                      source_area.gids[source][1] + 1)),
