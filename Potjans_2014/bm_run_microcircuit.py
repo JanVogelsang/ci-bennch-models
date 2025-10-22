@@ -109,7 +109,10 @@ print(
 ###############################################################################
 # Query the accumulated number of spikes on each rank.
 
-local_spike_counter = net.get_local_spike_counter()
+try:
+    local_spike_counter = sum(net.get_local_spike_counter())
+except:
+    local_spike_counter = net.get_local_spike_counter()
 num_neurons = net.get_network_size()
 rate = 1. * local_spike_counter / num_neurons / net.get_total_sim_time() * 1000
 mem = memory()
