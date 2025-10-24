@@ -101,7 +101,8 @@ params = {
     'step_data_keys': '{step_data_keys}',  # metrics to be recorded at each time step
     'profile_memory': False, # record memory profile
     'use_target_ptr': {use_target_ptr},
-    'num_targets_completed_before_forming_connections': '{num_targets_completed_before_forming_connections}'
+    'num_targets_completed_before_forming_connections': '{num_targets_completed_before_forming_connections}',
+    'use_compression': {use_compression}
 }
 step_data_keys = params['step_data_keys'].split(',')
 
@@ -216,6 +217,11 @@ def build_network():
     try:
         num_targets_completed_before_forming_connections = int(params['num_targets_completed_before_forming_connections'])
         nest.num_targets_completed_before_forming_connections = num_targets_completed_before_forming_connections
+    except:
+        pass
+
+    try:
+        nest.use_compressed_spikes = use_compression
     except:
         pass
 
