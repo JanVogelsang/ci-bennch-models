@@ -679,8 +679,10 @@ def connect(simulation,
                              source_area.name)
     for target in target_area.populations:
         for source in source_area.populations:
-            conn_spec = {'rule': 'fixed_total_number',
-                         'N': int(synapses[target][source])}
+            if not 'conn_type' in self.custom_params or self.custom_params['conn_type'] == 'fixed_total_number':
+                conn_spec = {'rule': 'fixed_total_number', 'N': int(synapses[target][source])}
+            else:
+                conn_spec = {'rule': 'fixed_indegree', 'indegree': int(synapses[target][source]) // self.neuron_numbers[target]}
 
             if target_area == source_area:
                 if 'E' in source:
