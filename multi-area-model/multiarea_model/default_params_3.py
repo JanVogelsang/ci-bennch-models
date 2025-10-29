@@ -60,7 +60,8 @@ sim_params = {
     # Spike buffer adaptation
     'spike_buffer_grow_extra' : 0.5,
     'spike_buffer_shrink_limit': 0.2,
-    'spike_buffer_shrink_spare': 0.1
+    'spike_buffer_shrink_spare': 0.1,
+    'conn_type': 'fixed_total_number'
 }
 
 """

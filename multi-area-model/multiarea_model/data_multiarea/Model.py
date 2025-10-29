@@ -62,10 +62,24 @@ def compute_Model_params(out_label='', mode='default'):
     """
     Load data
     """
-    with open(raw_fn, 'r', encoding='utf-8', errors='ignore') as f:
-        raw_data = json.load(f, strict=False)
-    with open(proc_fn, 'r', encoding='utf-8', errors='ignore') as f:
-        processed_data = json.load(f, strict=False)
+    file_read = False
+    while not file_read:
+        try:
+            with open(raw_fn, 'r', encoding='utf-8', errors='ignore') as f:
+                raw_data = json.load(f, strict=False)
+                file_read = True
+        except Exception as e:
+            print(e)
+            time.sleep(5)
+    file_read = False
+    while not file_read:
+        try:
+            with open(proc_fn, 'r', encoding='utf-8', errors='ignore') as f:
+                processed_data = json.load(f, strict=False)
+                file_read = True
+        except Exception as e:
+            print(e)
+            time.sleep(5)
 
     FLN_EDR_completed = processed_data['FLN_completed']
     SLN_Data = processed_data['SLN_completed']
