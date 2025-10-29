@@ -682,7 +682,7 @@ def connect(simulation,
             if not 'conn_type' in simulation.custom_params or simulation.custom_params['conn_type'] == 'fixed_total_number':
                 conn_spec = {'rule': 'fixed_total_number', 'N': int(synapses[target][source])}
             else:
-                conn_spec = {'rule': 'fixed_indegree', 'indegree': int(synapses[target][source]) // target_area.neuron_numbers[target]}
+                conn_spec = {'rule': 'fixed_indegree', 'indegree': int(synapses[target][source] // target_area.neuron_numbers[target])}
 
             if target_area == source_area:
                 if 'E' in source:
