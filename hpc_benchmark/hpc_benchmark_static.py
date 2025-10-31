@@ -218,13 +218,13 @@ def build_network():
         num_targets_completed_before_forming_connections = int(params['num_targets_completed_before_forming_connections'])
         nest.num_targets_completed_before_forming_connections = num_targets_completed_before_forming_connections
     except:
-        print(f"Failed setting num_targets_completed_before_forming_connections to {num_targets_completed_before_forming_connections}")
+        print(f"Failed setting num_targets_completed_before_forming_connections to {params['num_targets_completed_before_forming_connections']}")
         pass
 
     try:
-        nest.use_compressed_spikes = use_compression
+        nest.use_compressed_spikes = params['use_compression']
     except:
-        print(f"Failed setting use_compressed_spikes to {use_compression}")
+        print(f"Failed setting use_compressed_spikes to {params['use_compression']}")
         pass
 
     extra_params = {kwds}
