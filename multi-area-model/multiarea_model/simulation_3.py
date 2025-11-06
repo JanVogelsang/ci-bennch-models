@@ -627,7 +627,6 @@ def connect(simulation,
                 mean_delay = s / v
 
             syn_spec = {
-                'synapse_model': 'static_synapse',
                 'weight': nest.math.redraw(
                     nest.random.normal(
                         mean=W[target][source],
@@ -635,14 +634,30 @@ def connect(simulation,
                         ),
                     min=w_min,
                     max=w_max
-                    ),
-                'delay': nest.math.redraw(
-                    nest.random.normal(
-                        mean=mean_delay,
-                        std=mean_delay * network.params['delay_params']['delay_rel']
-                        ),
-                    min=simulation.params['dt'],
-                    max=np.Inf)}
+                    )}
+
+            if simulation.custom_params["use-inter-area-axonal-delay"] and target_area != source_area:
+                syn_spec['axonal_delay'] = 
+                    nest.math.redraw(
+                        nest.random.normal(
+                            mean=mean_delay - 1.,
+                            std=mean_delay * network.params['delay_params']['delay_rel']
+                            ),
+                        min=simulation.params['dt'],
+                        max=np.Inf)}
+                syn_spec['dendritic_delay'] = 1.
+                syn_spec['synapse_model'] = 'stdp_pl_synapse_hom_ax_delay'
+                syn_spec['lambda'] = 0.
+            else:
+                syn_spec['delay'] = 
+                    nest.math.redraw(
+                        nest.random.normal(
+                            mean=mean_delay,
+                            std=mean_delay * network.params['delay_params']['delay_rel']
+                            ),
+                        min=simulation.params['dt'] + 1.,
+                        max=np.Inf)}
+                syn_spec['synapse_model'] = 'static_synapse'
 
             nest.Connect(source_area.gids[source],
                          target_area.gids[target],
