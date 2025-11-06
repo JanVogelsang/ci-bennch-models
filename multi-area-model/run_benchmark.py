@@ -29,6 +29,8 @@ with open(fn, 'r') as f:
     if extra_params:
         custom_params['sim_params'].update(extra_params)
 
+custom_params["inter-area-axonal-delay"] = {inter-area-axonal-delay}
+
 print("Create network and simulate\n")
 
 try:
