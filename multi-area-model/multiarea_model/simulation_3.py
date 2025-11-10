@@ -637,8 +637,7 @@ def connect(simulation,
                     )}
 
             if simulation.custom_params["use-inter-area-axonal-delay"] and target_area != source_area:
-                syn_spec['axonal_delay'] = 
-                    nest.math.redraw(
+                syn_spec['axonal_delay'] = nest.math.redraw(
                         nest.random.normal(
                             mean=mean_delay - 1.,
                             std=mean_delay * network.params['delay_params']['delay_rel']
@@ -649,8 +648,7 @@ def connect(simulation,
                 syn_spec['synapse_model'] = 'stdp_pl_synapse_hom_ax_delay'
                 syn_spec['lambda'] = 0.
             else:
-                syn_spec['delay'] = 
-                    nest.math.redraw(
+                syn_spec['delay'] = nest.math.redraw(
                         nest.random.normal(
                             mean=mean_delay,
                             std=mean_delay * network.params['delay_params']['delay_rel']
