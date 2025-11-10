@@ -392,8 +392,18 @@ class Simulation:
 
         if self.detailed_timers:
             # subtract presim timers from simtime timers
-            for key in self.presim_timers.keys():
-                d[key] -= self.presim_timers[key]
+            for timer in self.presim_timers.keys():
+                try:
+                    if type(d[timer]) == tuple or type(d[timer]) == list:
+                        timer_array = tuple(d[timer][tid] - self.presim_timers[timer][tid] for tid in range(len(d[timer])))
+                        d[timer] = timer_array[0]
+                        d[timer + "_mean"] = np.mean(timer_array)
+                    else:
+                        d[timer] -= self.presim_timers[timer]
+                        d[timer + '_presim'] = self.presim_timers[timer]
+                except KeyError:
+                    # KeyError if compiled without detailed timers, except time_simulate
+                    continue
             
         print(d)
 
