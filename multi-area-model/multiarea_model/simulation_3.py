@@ -644,7 +644,7 @@ def connect(simulation,
                             std=mean_delay * network.params['delay_params']['delay_rel']
                             ),
                         min=simulation.params['dt'],
-                        max=np.Inf)}
+                        max=np.Inf)
                 syn_spec['dendritic_delay'] = 1.
                 syn_spec['synapse_model'] = 'stdp_pl_synapse_hom_ax_delay'
                 syn_spec['lambda'] = 0.
@@ -656,7 +656,7 @@ def connect(simulation,
                             std=mean_delay * network.params['delay_params']['delay_rel']
                             ),
                         min=simulation.params['dt'] + 1.,
-                        max=np.Inf)}
+                        max=np.Inf)
                 syn_spec['synapse_model'] = 'static_synapse'
 
             nest.Connect(source_area.gids[source],
