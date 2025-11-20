@@ -119,6 +119,7 @@ class MultiAreaModel_3:
             with open(parameter_fn, 'r') as f:
                 self.custom_params = json.load(f)
         nested_update(self.params, self.custom_params)
+        del self.params["use-inter-area-axonal-delay"]
         with open(tmp_data_fn, 'r') as f:
             dat = json.load(f)
 
