@@ -61,7 +61,7 @@ dicthash.FLOOR_SMALL_FLOATS = True
 
 
 class MultiAreaModel_3:
-    def __init__(self, network_spec, theory=False, simulation=False,
+    def __init__(self, network_spec, theory=False, simulation=False, use_inter_area_axonal_delay=False,
                  analysis=False, data_path=None, data_folder_hash=None,
                  *args, **keywords):
         """
@@ -119,7 +119,7 @@ class MultiAreaModel_3:
             with open(parameter_fn, 'r') as f:
                 self.custom_params = json.load(f)
         nested_update(self.params, self.custom_params)
-        del self.params["use-inter-area-axonal-delay"]
+
         with open(tmp_data_fn, 'r') as f:
             dat = json.load(f)
 
@@ -201,6 +201,7 @@ class MultiAreaModel_3:
             else:
                 sim_spec = keywords['sim_spec']
             self.init_simulation(sim_spec)
+            self.simulation.use_inter_area_axonal_delay = use_inter_area_axonal_delay
 
         if analysis:
             assert(getattr(self, 'simulation'))
