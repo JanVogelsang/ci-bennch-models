@@ -29,8 +29,6 @@ with open(fn, 'r') as f:
     if extra_params:
         custom_params['sim_params'].update(extra_params)
 
-custom_params['sim_params']["use-inter-area-axonal-delay"] = {use_inter_area_axonal_delay}
-
 print("Create network and simulate\n")
 
 try:
@@ -51,7 +49,8 @@ elif NEST_version == '3':
                          simulation=True,
                          sim_spec=custom_params['sim_params'],
                          data_path=data_path,
-                         data_folder_hash=data_folder_hash)
+                         data_folder_hash=data_folder_hash,
+                         use_inter_area_axonal_delay={use_inter_area_axonal_delay})
 print("simulate\n")
 M.simulation.simulate()
 
