@@ -683,7 +683,7 @@ def connect(simulation,
                     )}
 
             if target_area == source_area:
-                if simulation.custom_params["use-inter-area-axonal-delay"] and target_area != source_area:
+                if simulation.use_inter_area_axonal_delay and target_area != source_area:
                     syn_spec['axonal_delay'] = nest.math.redraw(
                             nest.random.normal(
                                 mean=mean_delay - 1.,
