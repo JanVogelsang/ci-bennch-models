@@ -651,6 +651,9 @@ def connect(simulation,
                              network.structure,
                              target_area.name,
                              source_area.name)
+
+    nest.SetDefaults("stdp_pl_synapse_hom", {'lambda': 0.})
+    nest.SetDefaults("stdp_pl_synapse_hom_ax_delay", {'lambda': 0.})
     for target in target_area.populations:
         for source in source_area.populations:
             conn_spec = {'rule': 'fixed_total_number',
@@ -693,7 +696,6 @@ def connect(simulation,
                             max=np.Inf)
                     syn_spec['dendritic_delay'] = 1.
                     syn_spec['synapse_model'] = 'stdp_pl_synapse_hom_ax_delay'
-                    syn_spec['lambda'] = 0.
                 else:
                     syn_spec['delay'] = nest.math.redraw(
                             nest.random.normal(
@@ -703,7 +705,6 @@ def connect(simulation,
                             min=simulation.params['dt'] + 1.,
                             max=np.Inf)
                     syn_spec['synapse_model'] = 'stdp_pl_synapse_hom'
-                    syn_spec['lambda'] = 0.
             else:
                 syn_spec['delay'] = nest.math.redraw(nest.random.normal(mean=mean_delay, std=mean_delay * network.params['delay_params']['delay_rel']), min=simulation.params['dt'] - 0.5 * nest.resolution, max=np.inf)
                 syn_spec['synapse_model'] = 'static_synapse'
