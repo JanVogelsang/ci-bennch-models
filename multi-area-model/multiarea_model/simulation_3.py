@@ -653,7 +653,8 @@ def connect(simulation,
                              source_area.name)
 
     nest.SetDefaults("stdp_pl_synapse_hom", {'lambda': 0.})
-    nest.SetDefaults("stdp_pl_synapse_hom_ax_delay", {'lambda': 0.})
+    if simulation.use_inter_area_axonal_delay:
+        nest.SetDefaults("stdp_pl_synapse_hom_ax_delay", {'lambda': 0.})
     for target in target_area.populations:
         for source in source_area.populations:
             conn_spec = {'rule': 'fixed_total_number',
