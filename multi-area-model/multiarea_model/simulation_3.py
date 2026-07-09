@@ -101,6 +101,7 @@ class Simulation:
         self.time_create = 0
         self.time_connect_area = 0
         self.time_connect_cc = 0
+        self.use_inter_area_axonal_delay = False
 
     def __eq__(self, other):
         # Two simulations are equal if the simulation parameters and
@@ -369,21 +370,52 @@ class Simulation:
              'init_memory': self.init_memory,
              'total_memory': self.total_memory}
 
-        if self.detailed_timers:
-            # subtract presim timers from simtime timers
-            for timer in self.presim_timers.keys():
+        final_kernel_status = nest.kernel_status
+        d.update(final_kernel_status)
+
+        # Subtract timer information from presimulation period
+        presim_timers = ['time_collocate_spike_data', 'time_communicate_spike_data', 'time_deliver_secondary_data', 'time_deliver_spike_data', 'time_gather_secondary_data', 'time_gather_spike_data', 'time_omp_synchronization_simulation', 'time_mpi_synchronization', 'time_simulate', 'time_update']
+        presim_timers.extend([timer + '_cpu' for timer in presim_timers])
+        other_timers = ['time_communicate_prepare', 'time_communicate_target_data', 'time_construction_connect', 'time_construction_create', 'time_gather_target_data', 'time_omp_synchronization_construction']
+        other_timers.extend([timer + '_cpu' for timer in other_timers])
+
+        for timer in presim_timers:
+            try:
                 try:
-                    if type(d[timer]) == tuple or type(d[timer]) == list:
-                        timer_array = tuple(d[timer][tid] - self.presim_timers[timer][tid] for tid in range(len(d[timer])))
-                        d[timer] = timer_array[0]
-                        d[timer + "_mean"] = np.mean(timer_array)
-                    else:
-                        d[timer] -= self.presim_timers[timer]
-                        d[timer + '_presim'] = self.presim_timers[timer]
-                except KeyError:
-                    # KeyError if compiled without detailed timers, except time_simulate
+                    timer_array = tuple(d[timer][tid] - self.intermediate_kernel_status[timer][tid] for tid in range(len(d[timer])))
+                    d[timer] = timer_array[0]
+                    d[timer + "_max"] = max(timer_array)
+                    d[timer + "_min"] = min(timer_array)
+                    d[timer + "_mean"] = np.mean(timer_array)
+                    d[timer + "_all"] = timer_array
+                    d[timer + '_presim'] = self.intermediate_kernel_status[timer][0]
+                    d[timer + "_presim_max"] = max(self.intermediate_kernel_status[timer])
+                    d[timer + "_presim_min"] = min(self.intermediate_kernel_status[timer])
+                    d[timer + "_presim_avg"] = np.mean(self.intermediate_kernel_status[timer])
+                    d[timer + "_presim_all"] = self.intermediate_kernel_status[timer]
+                except TypeError:
+                    # No threaded timers, fall back to scalar handling
+                    d[timer] -= self.intermediate_kernel_status[timer]
+                    d[timer + '_presim'] = self.intermediate_kernel_status[timer]
+            except KeyError:
+                # KeyError if compiled without detailed timers, except time_simulate
+                continue
+
+        for timer in other_timers:
+            try:
+                try:
+                    timer_array = d[timer]
+                    d[timer] = timer_array[0]
+                    d[timer + "_max"] = max(timer_array)
+                    d[timer + "_min"] = min(timer_array)
+                    d[timer + "_mean"] = np.mean(timer_array)
+                    d[timer + "_all"] = timer_array
+                except TypeError:
+                    # No threaded timers, d[timer] is already a scalar and is set after nest.kernel_status
                     continue
-            
+            except KeyError:
+                # KeyError if compiled without detailed timers, except time_simulate
+                continue
         print(d)
 
         nest.Cleanup()
