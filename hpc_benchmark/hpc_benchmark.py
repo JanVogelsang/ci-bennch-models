@@ -100,10 +100,10 @@ params = {
     'rng_seed': {rng_seed},                    # random number generator seed
     'path_name': '.',                          # path where all files will have to be written
     'log_file': 'logfile',                     # naming scheme for the log files
-    'step_data_keys': '{step_data_keys}'       # metrics to be recorded at each time step
-    'enable_stdp': {enable_stdp}               # use stdp synapses or only static ones
-    'use_extra_syn_type': {use_extra_syn_type} # use extra syn type
-    'use_adjacency_lists': {use_adjacency_lists} # use adjacency lists
+    'step_data_keys': '{step_data_keys}',      # metrics to be recorded at each time step
+    'enable_stdp': {enable_stdp},              # use stdp synapses or only static ones
+    'use_extra_syn_type': {use_extra_syn_type},# use extra syn type
+    'use_adjacency_lists': {use_adjacency_lists}# use adjacency lists
 }
 step_data_keys = params['step_data_keys'].split(',') if params['step_data_keys'] else []
 
