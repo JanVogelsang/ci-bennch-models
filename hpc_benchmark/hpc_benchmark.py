@@ -100,9 +100,9 @@ params = {
     'path_name': '.',  # path where all files will have to be written
     'log_file': 'logfile',  # naming scheme for the log files
     'step_data_keys': '{step_data_keys}',  # metrics to be recorded at each time step
-    'profile_memory': False, # record memory profile
+    'profile_memory': {profile_memory},  # record memory profile
 }
-step_data_keys = params['step_data_keys'].split(',')
+step_data_keys = [k.strip() for k in params['step_data_keys'].split(',') if k.strip()]
 
 
 def convert_synapse_weight(tau_m, tau_syn, C_m):
@@ -167,7 +167,7 @@ brunel_params = {
     'mean_potential': 5.7,
     'sigma_potential': 7.2,
 
-    'delay': {dendritic_delay} + {axonal_delay},  # synaptic delay, all connections(ms)
+    'delay': round({dendritic_delay} + {axonal_delay}, 6),  # synaptic delay, static connections(ms)
 
     # synaptic weight
     'JE': 0.14,  # peak of EPSP
@@ -176,10 +176,10 @@ brunel_params = {
     'g': -5.0,
 
     'stdp_params': {
-        'delay': {dendritic_delay},
+        'dendritic_delay': {dendritic_delay},
         'axonal_delay': {axonal_delay},
-       'alpha': 0.0513,
-        'lambda': 0.1,  # STDP step size
+        'alpha': 0.0513,
+        'lambda': {lambda},  # STDP step size
         'mu': 0.4,  # STDP weight dependence exponent(potentiation)
         'tau_plus': 15.0,  # time constant for potentiation
     },
@@ -288,7 +288,7 @@ def build_network():
                    {'weight': brunel_params['g'] * JE_pA})
 
     stdp_params['weight'] = JE_pA
-    nest.SetDefaults('stdp_pl_synapse_hom_hpc', stdp_params)
+    nest.SetDefaults('stdp_pl_synapse_hom_ax_delay_hpc', stdp_params)
 
     message('build_network', 'Connecting stimulus generators.')
 
@@ -304,7 +304,7 @@ def build_network():
     nest.Connect(E_neurons, E_neurons,
                  {'rule': 'fixed_indegree', 'indegree': CE,
                   'allow_autapses': False, 'allow_multapses': True},
-                 {'synapse_model': 'stdp_pl_synapse_hom_hpc'})
+                 {'synapse_model': 'stdp_pl_synapse_hom_ax_delay_hpc'})
 
     message('build_network', 'Connecting inhibitory -> excitatory population.')
 
@@ -451,10 +451,14 @@ def run_simulation():
 
         tic = time.time()
         base_memory = str(get_vmsize())
+        base_memory_rss = str(get_rss())
+        base_memory_peak = str(get_vmpeak())
         nest.Prepare()
 
         InitTime = time.time() - tic
         init_memory = str(get_vmsize())
+        init_memory_rss = str(get_rss())
+        init_memory_peak = str(get_vmpeak())
 
         tic = time.time()
         nest.Run(params['presimtime'])
@@ -479,18 +483,14 @@ def run_simulation():
          'py_time_simulate': SimCPUTime,
          'average_rate': average_rate,
          'base_memory': base_memory,
+         'base_memory_rss': base_memory_rss,
+         'base_memory_peak': base_memory_peak,
          'init_memory': init_memory,
-         'total_memory': total_memory}
-
-    if params['profile_memory']:
-        memory_dict = {'base_memory_rss': base_memory_rss,
-                       'init_memory_rss': init_memory_rss,
-                       'total_memory_rss': total_memory_rss,
-                       'base_memory_peak': base_memory_peak,
-                       'init_memory_peak': init_memory_peak,
-                       'total_memory_peak': total_memory_peak}
-
-        d.update(memory_dict)
+         'init_memory_rss': init_memory_rss,
+         'init_memory_peak': init_memory_peak,
+         'total_memory': total_memory,
+         'total_memory_rss': total_memory_rss,
+         'total_memory_peak': total_memory_peak}
 
     d.update(build_dict)
     final_kernel_status = nest.kernel_status
