@@ -706,7 +706,7 @@ def connect(simulation,
                             std=mean_delay * network.params['delay_params']['delay_rel']
                             ),
                         min=simulation.params['dt'] - 0.5 * nest.resolution,
-                        max=np.Inf)}
+                        max=np.inf)}
 
                 nest.Connect(source_area.gids[source],
                              target_area.gids[target],
