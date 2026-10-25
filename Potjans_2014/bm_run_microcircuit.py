@@ -15,6 +15,8 @@ usually not recorded in this scenario, the evaluation part with plotting of
 ###############################################################################
 # Import the necessary modules and start the time measurements.
 
+import json
+import sys
 from stimulus_params import stim_dict
 from network_params import net_dict
 from sim_params import sim_dict
@@ -38,21 +40,27 @@ time_start = time.time()
 # network parameters are here overwritten.
 
 
-sim_dict.update({
-    't_presim': {model_time_presim},
-    't_sim': {model_time_sim},
-    'rec_dev': [{record_spikes}],
-    'rng_seed': {rng_seed},
-    'local_num_threads': {threads_per_task},
-    'print_time': False,
-    'kwds': {kwds}})
+sim_dict.update({'print_time': False})
 
-net_dict.update({
-    'N_scaling': {scale_N},
-    'K_scaling': {scale_K},
-    'poisson_input': {poisson_input},
-    'V0_type': {V0_type},
-    'synapse_type': {synapse_type}})
+
+def _read_parameter_file(argv):
+    """`sim_dict` and `net_dict` updated from the JSON file that `-p FILE` names, written as
+    `{"sim": {...}, "net": {...}}`. A section or a key the two dicts do not hold stops the run."""
+    if '-p' not in argv:
+        return
+    with open(argv[argv.index('-p') + 1], 'r', encoding='utf-8') as handle:
+        overrides = json.load(handle)
+    sections = {'sim': sim_dict, 'net': net_dict}
+    unknown = sorted(set(overrides) - set(sections)) + sorted(
+        '%s.%s' % (name, key) for name, values in overrides.items() if name in sections
+        for key in values if key not in sections[name])
+    if unknown:
+        raise SystemExit('parameter file: unknown keys %s' % unknown)
+    for name, values in overrides.items():
+        sections[name].update(values)
+
+
+_read_parameter_file(sys.argv)
 
 py_timers = {}
 memory_used = {}
