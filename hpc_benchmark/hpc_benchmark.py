@@ -72,6 +72,8 @@ References
 
 """
 
+import json
+import sys
 import numpy as np
 import os
 import time
@@ -87,21 +89,45 @@ M_ERROR = 30
 # Parameter section
 # Define all relevant parameters: changes should be made here
 
+_REQUIRED = object()
+
 params = {
-    'num_threads': {threads_per_task},  # total number of threads per process
-    'scale': {scale},  # scaling factor of the network size
+    'num_threads': _REQUIRED,  # total number of threads per process
+    'scale': _REQUIRED,  # scaling factor of the network size
     # total network size = scale*11250 neurons
-    'simtime': {model_time_sim},  # total simulation time in ms
-    'presimtime': {model_time_presim},  # simulation time until reaching equilibrium
+    'simtime': _REQUIRED,  # total simulation time in ms
+    'presimtime': _REQUIRED,  # simulation time until reaching equilibrium
     'dt': 0.1,  # simulation step
-    'compressed_spikes': {compressed_spikes},  # whether to use spike compression
-    'record_spikes': {record_spikes},  # switch to record spikes of excitatory neurons to file
-    'rng_seed': {rng_seed},  # random number generator seed
+    'compressed_spikes': True,  # whether to use spike compression
+    'record_spikes': _REQUIRED,  # switch to record spikes of excitatory neurons to file
+    'rng_seed': _REQUIRED,  # random number generator seed
     'path_name': '.',  # path where all files will have to be written
     'log_file': 'logfile',  # naming scheme for the log files
-    'step_data_keys': '{step_data_keys}',  # metrics to be recorded at each time step
-    'profile_memory': {profile_memory},  # record memory profile
+    'step_data_keys': '',  # metrics to be recorded at each time step
+    'profile_memory': _REQUIRED,  # record memory profile
+    'dendritic_delay': _REQUIRED,
+    'axonal_delay': _REQUIRED,
+    'lambda': _REQUIRED,
 }
+
+
+def _read_parameter_file(argv):
+    """`params` updated from the JSON file that `-p FILE` names. A key `params` does not hold,
+    or a `_REQUIRED` one the file does not give, stops the run before anything is built."""
+    overrides = {}
+    if '-p' in argv:
+        with open(argv[argv.index('-p') + 1], 'r', encoding='utf-8') as handle:
+            overrides = json.load(handle)
+    unknown = sorted(set(overrides) - set(params))
+    missing = sorted(key for key, value in params.items()
+                     if value is _REQUIRED and key not in overrides)
+    if unknown or missing:
+        raise SystemExit('parameter file: unknown keys %s, missing keys %s' % (unknown, missing))
+    params.update(overrides)
+
+
+_read_parameter_file(sys.argv)
+
 step_data_keys = [k.strip() for k in params['step_data_keys'].split(',') if k.strip()]
 
 
@@ -167,7 +193,7 @@ brunel_params = {
     'mean_potential': 5.7,
     'sigma_potential': 7.2,
 
-    'delay': round({dendritic_delay} + {axonal_delay}, 6),  # synaptic delay, static connections(ms)
+    'delay': round(params['dendritic_delay'] + params['axonal_delay'], 6),  # synaptic delay, static connections(ms)
 
     # synaptic weight
     'JE': 0.14,  # peak of EPSP
@@ -176,10 +202,10 @@ brunel_params = {
     'g': -5.0,
 
     'stdp_params': {
-        'dendritic_delay': {dendritic_delay},
-        'axonal_delay': {axonal_delay},
+        'dendritic_delay': params['dendritic_delay'],
+        'axonal_delay': params['axonal_delay'],
         'alpha': 0.0513,
-        'lambda': {lambda},  # STDP step size
+        'lambda': params['lambda'],  # STDP step size
         'mu': 0.4,  # STDP weight dependence exponent(potentiation)
         'tau_plus': 15.0,  # time constant for potentiation
     },
@@ -225,7 +251,7 @@ def build_network():
                           'overwrite_files': True,
                           'use_compressed_spikes': params['compressed_spikes'],
                           'keep_source_table': False})
-    extra_params = {kwds}
+    extra_params = {}
     if extra_params:
         nest.SetKernelStatus(extra_params)
 
